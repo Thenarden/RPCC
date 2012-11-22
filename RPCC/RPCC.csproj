@@ -122,6 +122,7 @@
     <Compile Include="RegExPattern\Expression.cs" />
     <Compile Include="RegExPattern\Group.cs" />
     <Compile Include="RegExPattern\Pattern.cs" />
+    <Compile Include="RegExPattern\Provider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

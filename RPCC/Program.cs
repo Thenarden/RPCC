@@ -21,21 +21,17 @@ namespace RPCC
 
 			string test = File.ReadAllText ("test.c");
 			
-			Dictionary<String, Pattern> Storage = new Dictionary<string, Pattern>();
-			Storage["type"] = "(void|char|short|int|long|float|double)";
-			Storage["identifier"] = "[a-zA-Z_][a-zA-Z_0-9]*";
-
 			Pattern regExPattern = 
 				new Group("def", 
-					"(" + new Group("type", Storage["type"]) + 
-					"\\s+" + 
-					new Group("identifier", Storage["identifier"]) + 
+					"(" + new Group("type", Provider.type) + 
+					"\\s+" +
+					new Group("identifier", Provider.identifier) + 
 					"\\s*\\(" + 
 					new Group("params", 
 						"\\s*" +
-						Storage["type"]+"\\s*"+Storage["identifier"] +
-						"\\s*(,\\s*" + 
-						Storage["type"]+"\\s*"+Storage["identifier"] + 
+						Provider.type + "\\s*" + Provider.identifier +
+						"\\s*(,\\s*" +
+						Provider.type + "\\s*" + Provider.identifier + 
 						")*") +  
 					"?" + 
 					"\\))") + 
