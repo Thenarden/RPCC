@@ -9,15 +9,19 @@ namespace RPCC.AST
 	class Document : ISyntaxNode
 	{
 		public List<ISyntaxNode> Nodes;
+		public Dictionary<String, FunctionDeclaration> Functions;
 
 		public Document(string Input)
 			: base (null)
 		{
 			Nodes = new List<ISyntaxNode>();
-
-			while (TopWord(Input).Length > 0)
+			Functions = new Dictionary<string, FunctionDeclaration>();
+			while (true)
 			{
-				
+				Input = Input.TrimStart(new char[] { ' ', '\t', '\n', '\r' });
+				if (Input.Length == 0)
+					break;
+
 				/* Try parse any possible construct
 				 * like:
 				 *  - Variable declaration
@@ -25,19 +29,31 @@ namespace RPCC.AST
 				 *  - Function declaration
 				 */
 
-				Exception lastEx = null;
+				if (TryParse(ref Input, delegate(ref string i) { return new VariableDeclaration(this, ref i); }) != null)
+					continue;
 
-				if (TryParse(ref Input, delegate(ref string i) { return new VariableDeclaration(this, ref i); }, out lastEx))
+				if (TryParse(ref Input, delegate(ref string i) { return new ConstantDeclaration(this, ref i); }) != null)
+					continue;
+
+				FunctionDeclaration n = (FunctionDeclaration)TryParse(ref Input, delegate(ref string i) { return new FunctionDeclaration(this, ref i); });
+				if (n != null)
 				{
-					if (lastEx != null) 
-						throw lastEx;
-
+					if (!Functions.ContainsKey(n.Identifier))
+						Functions.Add(n.Identifier, n);
+					else if (n.HasBody)
+					{
+						if (!Functions[n.Identifier].HasBody) // Oh, well. Function was declared, but not defined....
+							Functions[n.Identifier] = n;
+						else
+							throw new ParseException("Semantic error: The function \"" + n.Identifier + "\" was already defined.");
+					}
+					else
+						throw new ParseException("Semantic error: The function \""+n.Identifier+"\" was already declared.");
 					continue;
 				}
 
-				string invalidToken = TopWord (Input);
 				// Well, if nothing got parsed, then it's a invalid expression
-				throw new ParseException();
+				throw new ParseException("Syntax error: Invalid token \""+Input+"\"");
 			}
 
 		}
@@ -47,9 +63,19 @@ namespace RPCC.AST
 			throw new NotImplementedException();
 		}
 
+		public override Signedness DefaultSignedness
+		{
+			get
+			{
+				return Signedness.Signed;
+			}
+		}
+
+
+
 		private delegate ISyntaxNode Constr(ref string i);
 
-		private bool TryParse(ref string Input, Constr constr, out Exception ex)
+		private ISyntaxNode TryParse(ref string Input, Constr constr)
 		{
 			try
 			{
@@ -60,20 +86,16 @@ namespace RPCC.AST
 				Nodes.Add(node);
 
 				Input = tmp; // Update Input string...
-				ex = null;
-				return true;
+				return node;
 			}
 		/*	catch (SyntaxException e)
 			{
-				ex = e;
 				return true;
 			}*/
 			catch(ParseException e)
 			{
-				ex = null;
-				return false;
+				return null;
 			}
 		}
-
 	}
 }

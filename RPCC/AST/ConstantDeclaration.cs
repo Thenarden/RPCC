@@ -8,14 +8,8 @@ using RPCC.RegExPattern;
 
 namespace RPCC.AST
 {
-	class VariableDeclaration : ISyntaxNode
+	class ConstantDeclaration : ISyntaxNode
 	{
-		public Signedness Signedness
-		{
-			get;
-			private set;
-		}
-
 		public TypeSpecifier Type
 		{
 			get;
@@ -28,12 +22,17 @@ namespace RPCC.AST
 			private set;
 		}
 
-		public String Identifier
+		public Signedness Signedness
 		{
 			get;
 			private set;
 		}
 
+		public String Identifier
+		{
+			get;
+			private set;
+		}
 
 		public String Assignment
 		{
@@ -41,28 +40,22 @@ namespace RPCC.AST
 			private set;
 		}
 
-		public VariableDeclaration(ISyntaxNode parent, ref string Input)
-			: this (parent, ref Input, true)
-		{}
-
-		public VariableDeclaration(ISyntaxNode parent, ref string Input, bool allowAssignment)
+		public ConstantDeclaration(ISyntaxNode parent, ref string Input)
 			: base (parent)
 		{
 		//	string regExPattern = "(?<def>(?<signdness>signed|unsigned)?\\s*(?<type>(void|char|short|int|long|float|double))(?<pointer>[\\s\\*]+)(?<identifier>[a-zA-Z_][a-zA-Z_0-9]*)\\s*(=\\s*(?<assignment>.*))?);(?<rest>.*)";
 
 			Pattern regExPattern =
 				new Group("def",
-					"(" +
+					"const\\s+(" +
 						new Group("signedness", "signed|unsigned") +
 						"\\s+" +
 					")?" +
 					new Group("type", Provider.type) +
 					new Group("pointer", "[\\s\\*]+") +
 					new Group("identifier", Provider.identifier) +
-					"\\s*(" +
-						"=\\s*" +
-						new Group("assignment", ".*") +
-					")?") +
+					"\\s*=\\s*" +
+					new Group("assignment", ".*")) +
 				";";
 
 			System.Text.RegularExpressions.Regex regEx = new System.Text.RegularExpressions.Regex(regExPattern);
@@ -75,7 +68,7 @@ namespace RPCC.AST
 			Input = Input.Remove(match.Index, match.Length);
 
 			// Load signedness
-			if (match.Groups["signedness"].Success)
+			if (match.Groups["signedness"].Value != "")
 				this.Signedness = (Signedness)Enum.Parse(typeof(Signedness), match.Groups["signedness"].Value, true);
 			else
 				this.Signedness = this.DefaultSignedness;
@@ -83,23 +76,17 @@ namespace RPCC.AST
 			// Load type
 			Type = TypeSpecifier.Parse(match.Groups["type"].Value);
 			if (Type == null)
-				throw new SyntaxException("Error parsing variable: Expected type, got \"" + match.Groups["type"].Value + "\".");
+				throw new SyntaxException("Error parsing constant: Expected type, got \"" + match.Groups["type"].Value + "\".");
 
 			// Load identifier
 			Identifier = match.Groups["identifier"].Value;
-			if ((match.Groups["identifier"].Success) && ((Identifier == null) || (Identifier == "")))
-				throw new SyntaxException("Error parsing variable: Expected identifier, got \"" + match.Groups["identifier"].Value + "\".");
+			if ((Identifier == null) || (Identifier == ""))
+				throw new SyntaxException("Error parsing constant: Expected identifier, got \"" + match.Groups["identifier"].Value + "\".");
 
 			// And last but not least possible assignments
-			if (allowAssignment)
-			{
-				Assignment = match.Groups["assignment"].Value;
-				if ((match.Groups["assignment"].Success) && ((Assignment == null) || (Assignment == "")))
-					throw new SyntaxException("Error parsing variable: Expected assignment, got \"" + match.Groups["assignment"].Value + "\".");
-			}
-			else if (match.Groups["assignment"].Success)
-				throw new SyntaxException("Error parsing variable: Assignment is not allowed here.");
-
+			Assignment = match.Groups["assignment"].Value;
+			if ((Assignment == null) || (Assignment == ""))
+				throw new SyntaxException("Error parsing constant: Expected assignment, got \"" + match.Groups["assignment"].Value + "\".");
 		}
 
 		public override byte[] Compile()

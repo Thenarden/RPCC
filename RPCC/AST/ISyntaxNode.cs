@@ -9,10 +9,15 @@ namespace RPCC.AST
 {
 	abstract class ISyntaxNode
 	{
-		public ISyntaxNode Parent
+		public virtual ISyntaxNode Parent
 		{
 			get;
 			private set;
+		}
+
+		public virtual Signedness DefaultSignedness
+		{
+			get { return Parent.DefaultSignedness; }
 		}
 
 		public ISyntaxNode (ISyntaxNode parent)
@@ -21,9 +26,7 @@ namespace RPCC.AST
 		}
 
 		public abstract byte[] Compile();
-
-
-
+		
 		protected static Char[] Delimiters = 
 		{
 			' ',

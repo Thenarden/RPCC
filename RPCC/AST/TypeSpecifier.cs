@@ -18,7 +18,7 @@ namespace RPCC.AST
 		{
 			string tmp = Input;
 
-			string word = PopWord(ref tmp);
+			string word = PopWord(ref Input);
 
 			switch (word.ToLower())
 			{
@@ -43,13 +43,13 @@ namespace RPCC.AST
 					throw new NotImplementedException();
 				case "enum":
 					throw new NotImplementedException();
-				
+
 				default:
+					Input = tmp; // Revert input variable
 					return null;
 					//TODO: Well, this is something I should think about. Better throw a exception or just return null?
 					//throw new SyntaxException("Syntax error: Expected type name, got \"" + Input + "\".");
 			}
-			Input = tmp;
 		}
 
 	//x	Struct,

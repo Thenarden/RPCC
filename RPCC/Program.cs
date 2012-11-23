@@ -19,28 +19,25 @@ namespace RPCC
 		public Program(string[] arg)
 		{
 
-			string test = File.ReadAllText ("test.c");
-			
-			Pattern regExPattern = 
-				new Group("def", 
-					"(" + new Group("type", Provider.type) + 
-					"\\s+" +
-					new Group("identifier", Provider.identifier) + 
-					"\\s*\\(" + 
-					new Group("params", 
-						"\\s*" +
-						Provider.type + "\\s*" + Provider.identifier +
-						"\\s*(,\\s*" +
-						Provider.type + "\\s*" + Provider.identifier + 
-						")*") +  
-					"?" + 
-					"\\))") + 
+	/*		Pattern regExPattern =
+				new Group("def",
+					"(" + 
+						new Group("signdness", "signed|unsigned") +
+						"\\s+" + 
+					")?" +
+					new Group("type", Provider.type) +
+					new Group("pointer", "[\\s\\*]+") +
+					new Group("identifier", Provider.identifier) +
+					"\\s*("+
+						"=\\s*" +
+						new Group("assignment", ".*") +
+					")?") +
 				";" + new Group("rest", ".*");
-			Console.WriteLine(regExPattern);
-			Console.WriteLine();
+		//	Console.WriteLine(regExPattern);
+
 			System.Text.RegularExpressions.Regex regEx = new System.Text.RegularExpressions.Regex(regExPattern);
 
-			System.Text.RegularExpressions.Match match = regEx.Match("void testfunc (int testParam1, short testParam2, long testparam3);reststuff");
+			System.Text.RegularExpressions.Match match = regEx.Match("int testint = 14;");
 			if (!match.Success)
 				Console.WriteLine ("No match found.");
 			else
@@ -50,13 +47,15 @@ namespace RPCC
 					Console.WriteLine(gname + ": "+match.Groups[gname]);
 				}
 			}
-
-		/*	Document doc = new Document(test);
+			*/
+		
+			string test = File.ReadAllText ("test.c");
+			Document doc = new Document(test);
 
 			foreach (ISyntaxNode node in doc.Nodes)
 			{
 				Console.WriteLine(node.GetType().Name);
-			}*/
+			}
 			
 
 			Console.ReadKey();

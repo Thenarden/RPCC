@@ -18,7 +18,7 @@ namespace RPCC.RegExPattern
 			get { return Get("identifier"); }
 		}
 
-		public static Provider ()
+		static Provider ()
 		{
 			Storage = new Dictionary<string, Pattern>();
 
