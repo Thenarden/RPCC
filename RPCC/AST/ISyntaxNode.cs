@@ -14,15 +14,39 @@ namespace RPCC.AST
 			get;
 			private set;
 		}
-
+		
 		public virtual Signedness DefaultSignedness
 		{
-			get { return Parent.DefaultSignedness; }
+			get
+			{
+				if (Parent == null)
+					throw new NullReferenceException("Can't read Default signedness cause parent is not defined.");
+				return Parent.DefaultSignedness;
+			}
 		}
 
 		public ISyntaxNode (ISyntaxNode parent)
 		{
 			Parent = parent;
+		}
+
+		public virtual bool IsVariableDeclared (string Identifier)
+		{
+			if (Parent == null)
+				return false;
+			return Parent.IsVariableDeclared(Identifier);
+		}
+		public virtual bool IsConstantDeclared(string Identifier)
+		{
+			if (Parent == null)
+				return false;
+			return Parent.IsConstantDeclared(Identifier);
+		}
+		public virtual bool IsFunctionDeclared(string Identifier)
+		{
+			if (Parent == null)
+				return false;
+			return Parent.IsFunctionDeclared(Identifier);
 		}
 
 		public abstract byte[] Compile();

@@ -10,6 +10,7 @@ namespace RPCC.AST
 {
 	class VariableDeclaration : ISyntaxNode
 	{
+
 		public Signedness Signedness
 		{
 			get;
@@ -81,7 +82,7 @@ namespace RPCC.AST
 				this.Signedness = this.DefaultSignedness;
 
 			// Load type
-			Type = TypeSpecifier.Parse(match.Groups["type"].Value);
+			Type = TypeSpecifier.Parse(this, match.Groups["type"].Value);
 			if (Type == null)
 				throw new SyntaxException("Error parsing variable: Expected type, got \"" + match.Groups["type"].Value + "\".");
 

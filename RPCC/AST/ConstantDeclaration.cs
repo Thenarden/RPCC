@@ -10,6 +10,11 @@ namespace RPCC.AST
 {
 	class ConstantDeclaration : ISyntaxNode
 	{
+		public override int CompiledSize
+		{
+			get { return 0; } // Constants do not get into compiled code but get replaced by their value....
+		}
+
 		public TypeSpecifier Type
 		{
 			get;

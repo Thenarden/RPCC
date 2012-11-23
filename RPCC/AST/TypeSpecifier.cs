@@ -12,30 +12,30 @@ namespace RPCC.AST
 		public abstract String TypeName
 		{
 			get;
+			protected set;
+		}
+		public abstract int Size
+		{
+			get;
 		}
 
-		public static TypeSpecifier Parse (string Input)
+		public static TypeSpecifier Parse (ISyntaxNode parent, string Input)
 		{
-			string tmp = Input;
 
-			string word = PopWord(ref Input);
+			string[] words = Input.Split(new char[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+			if (words.Length == 0)
+				throw new ArgumentNullException ("Error parsing type specifier: Input string was empty.")
 
-			switch (word.ToLower())
+			switch (words[0].ToLower())
 			{
 				case "void":
-					return AtomarTypeSpecifier.Void;
 				case "char":
-					return AtomarTypeSpecifier.Char;
 				case "short":
-					return AtomarTypeSpecifier.Short;
 				case "int":
-					return AtomarTypeSpecifier.Int;
 				case "long":
-					return AtomarTypeSpecifier.Long;
 				case "float":
-					return AtomarTypeSpecifier.Float;
 				case "double":
-					return AtomarTypeSpecifier.Double;
+					return new AtomarTypeSpecifier (parent, words[0]);
 
 				case "struct":
 					throw new NotImplementedException();
@@ -45,7 +45,6 @@ namespace RPCC.AST
 					throw new NotImplementedException();
 
 				default:
-					Input = tmp; // Revert input variable
 					return null;
 					//TODO: Well, this is something I should think about. Better throw a exception or just return null?
 					//throw new SyntaxException("Syntax error: Expected type name, got \"" + Input + "\".");
@@ -56,13 +55,8 @@ namespace RPCC.AST
 	//x	Union,
 	//x	Enum,
 
-		protected TypeSpecifier ()
-			: base (null)
+		protected TypeSpecifier (ISyntaxNode parent)
+			: base (parent)
 		{}
-
-		public override byte[] Compile()
-		{
-			throw new NotImplementedException();
-		}
 	}
 }

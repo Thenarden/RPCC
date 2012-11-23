@@ -8,14 +8,27 @@ namespace RPCC.AST
 {
 	class Document : ISyntaxNode
 	{
-		public List<ISyntaxNode> Nodes;
-		public Dictionary<String, FunctionDeclaration> Functions;
+		private Dictionary<String, VariableDeclaration> Variables;
+		private Dictionary<String, ConstantDeclaration> Constants;
+		private Dictionary<String, FunctionDeclaration> Functions;
+
+
+
+		public override Signedness DefaultSignedness
+		{
+			get
+			{
+				return Signedness.Signed;
+			}
+		}
 
 		public Document(string Input)
 			: base (null)
 		{
-			Nodes = new List<ISyntaxNode>();
+			Variables = new Dictionary<string, VariableDeclaration>();
+			Constants = new Dictionary<string, ConstantDeclaration>();
 			Functions = new Dictionary<string, FunctionDeclaration>();
+
 			while (true)
 			{
 				Input = Input.TrimStart(new char[] { ' ', '\t', '\n', '\r' });
@@ -28,27 +41,39 @@ namespace RPCC.AST
 				 *  - Constant declaration
 				 *  - Function declaration
 				 */
-
-				if (TryParse(ref Input, delegate(ref string i) { return new VariableDeclaration(this, ref i); }) != null)
-					continue;
-
-				if (TryParse(ref Input, delegate(ref string i) { return new ConstantDeclaration(this, ref i); }) != null)
-					continue;
-
-				FunctionDeclaration n = (FunctionDeclaration)TryParse(ref Input, delegate(ref string i) { return new FunctionDeclaration(this, ref i); });
-				if (n != null)
+				
+				VariableDeclaration v = TryParse<VariableDeclaration>(ref Input, delegate(ref string i) { return new VariableDeclaration(this, ref i); })
+				if (v != null)
 				{
-					if (!Functions.ContainsKey(n.Identifier))
-						Functions.Add(n.Identifier, n);
-					else if (n.HasBody)
+					if (Variables.ContainsKey(v.Identifier))
+						throw new SyntaxException ("Semantic error: Variable \""+v.Identifier+"\" is already declared in this scope.");
+					Variables.Add (v.Identifier, v);
+					continue;
+				}
+				
+				ConstantDeclaration c = TryParse<ConstantDeclaration>(ref Input, delegate(ref string i) { return new ConstantDeclaration(this, ref i); })
+				if (c != null)
+				{
+					if (Constants.ContainsKey(c.Identifier))
+						throw new SyntaxException ("Semantic error: Constant \""+c.Identifier+"\" is already declared in this scope.");
+					Constants.Add (c.Identifier, c);
+					continue;
+				}
+
+				FunctionDeclaration f = TryParse<FunctionDeclaration>(ref Input, delegate(ref string i) { return new FunctionDeclaration(this, ref i); });
+				if (f != null)
+				{
+					if (!Functions.ContainsKey(f.Identifier))
+						Functions.Add(f.Identifier, f);
+					else if (f.HasBody)
 					{
-						if (!Functions[n.Identifier].HasBody) // Oh, well. Function was declared, but not defined....
-							Functions[n.Identifier] = n;
+						if (!Functions[f.Identifier].HasBody) // Oh, well. Function was declared, but not defined....
+							Functions[f.Identifier] = f;
 						else
-							throw new ParseException("Semantic error: The function \"" + n.Identifier + "\" was already defined.");
+							throw new ParseException("Semantic error: The function \"" + f.Identifier + "\" was already defined.");
 					}
 					else
-						throw new ParseException("Semantic error: The function \""+n.Identifier+"\" was already declared.");
+						throw new ParseException("Semantic error: The function \""+f.Identifier+"\" was already declared.");
 					continue;
 				}
 
@@ -63,27 +88,30 @@ namespace RPCC.AST
 			throw new NotImplementedException();
 		}
 
-		public override Signedness DefaultSignedness
+		public override bool IsConstantDeclared(string Identifier)
 		{
-			get
-			{
-				return Signedness.Signed;
-			}
+			return Constants.ContainsKey(Identifier);
+		}
+		public override bool IsVariableDeclared(string Identifier)
+		{
+			return Variables.ContainsKey(Identifier);
+		}
+		public override bool IsFunctionDeclared(string Identifier)
+		{
+			return Functions.ContainsKey(Identifier);
 		}
 
 
+		private delegate T Constr<T>(ref string i);
 
-		private delegate ISyntaxNode Constr(ref string i);
-
-		private ISyntaxNode TryParse(ref string Input, Constr constr)
+		private T TryParse<T>(ref string Input, Constr<T> constr)
 		{
 			try
 			{
 				string tmp = Input;
 
 				// Try to parse as Variable Declaration
-				ISyntaxNode node = constr(ref tmp);
-				Nodes.Add(node);
+				T node = constr(ref tmp);
 
 				Input = tmp; // Update Input string...
 				return node;

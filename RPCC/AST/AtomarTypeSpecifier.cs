@@ -10,7 +10,7 @@ namespace RPCC.AST
 		/*
 		 * Static "Enum" members
 		 */
-		public static TypeSpecifier Void
+	/*	public static TypeSpecifier Void
 		{
 			get { return new AtomarTypeSpecifier("Void"); }
 		}
@@ -43,22 +43,51 @@ namespace RPCC.AST
 		public static TypeSpecifier Double
 		{
 			get { return new AtomarTypeSpecifier("Double"); }
-		}
+		}*/
 		
 
 		/* 
 		 * Instance members
 		 */
-
-		public override string  TypeName
+		public override string TypeName
 		{
-			get { throw new NotImplementedException(); }
+			get;
+			protected set;
 		}
 
-		protected AtomarTypeSpecifier (String type)
+		public override int Size
 		{
-		
+			get 
+			{
+				switch (TypeName.ToLower())
+				{
+					case "void":
+						return 0;
+					case "char":
+						return 1;
+					case "short":
+						return 2;
+					case "int":
+						return 4;
+					case "long":
+						return 8;
+					case "float":
+						return 4;
+					case "double":
+						return 8;
+
+					default:
+						throw new ArgumentException ("Syntax error: Unknown type specifier \""+TypeName+"\".")
+				}
+			}
 		}
-	
+
+		protected AtomarTypeSpecifier (ISyntaxNode parent,  String type)
+			: base (parent)
+		{
+			this.TypeName = type;
+		}
+
+
 	}
 }
