@@ -8,9 +8,9 @@ namespace RPCC.AST
 {
 	class Document : ISyntaxNode
 	{
-		private Dictionary<String, VariableDeclaration> Variables;
-		private Dictionary<String, ConstantDeclaration> Constants;
-		private Dictionary<String, FunctionDeclaration> Functions;
+		public Dictionary<String, VariableDeclaration> Variables;
+		public Dictionary<String, ConstantDeclaration> Constants;
+		public Dictionary<String, FunctionDeclaration> Functions;
 
 
 
@@ -42,7 +42,7 @@ namespace RPCC.AST
 				 *  - Function declaration
 				 */
 				
-				VariableDeclaration v = TryParse<VariableDeclaration>(ref Input, delegate(ref string i) { return new VariableDeclaration(this, ref i); })
+				VariableDeclaration v = TryParse<VariableDeclaration>(ref Input, delegate(ref string i) { return new VariableDeclaration(this, ref i); });
 				if (v != null)
 				{
 					if (Variables.ContainsKey(v.Identifier))
@@ -50,8 +50,8 @@ namespace RPCC.AST
 					Variables.Add (v.Identifier, v);
 					continue;
 				}
-				
-				ConstantDeclaration c = TryParse<ConstantDeclaration>(ref Input, delegate(ref string i) { return new ConstantDeclaration(this, ref i); })
+
+				ConstantDeclaration c = TryParse<ConstantDeclaration>(ref Input, delegate(ref string i) { return new ConstantDeclaration(this, ref i); });
 				if (c != null)
 				{
 					if (Constants.ContainsKey(c.Identifier))
@@ -104,7 +104,7 @@ namespace RPCC.AST
 
 		private delegate T Constr<T>(ref string i);
 
-		private T TryParse<T>(ref string Input, Constr<T> constr)
+		private T TryParse<T>(ref string Input, Constr<T> constr) where T: class
 		{
 			try
 			{
@@ -120,7 +120,7 @@ namespace RPCC.AST
 			{
 				return true;
 			}*/
-			catch(ParseException e)
+			catch(ParseException)
 			{
 				return null;
 			}

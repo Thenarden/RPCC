@@ -88,7 +88,7 @@ namespace RPCC.AST
 			Input = Input.Remove(match.Index, match.Length);
 
 
-			Type = TypeSpecifier.Parse(match.Groups["type"].Value);
+			Type = TypeSpecifier.Parse(this, match.Groups["type"].Value);
 			if (Type == null)
 				throw new SyntaxException("Error parsing variable: Expected type, got \"" + match.Groups["type"].Value + "\".");
 
@@ -106,7 +106,7 @@ namespace RPCC.AST
 					VariableDeclaration decl = new VariableDeclaration(this, ref paramStrings[i], false);
 					param.Add(decl);
 				}
-				catch (ParseException e)
+				catch (ParseException)
 				{
 				}
 			}

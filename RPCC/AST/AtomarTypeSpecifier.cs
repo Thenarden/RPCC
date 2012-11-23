@@ -77,17 +77,40 @@ namespace RPCC.AST
 						return 8;
 
 					default:
-						throw new ArgumentException ("Syntax error: Unknown type specifier \""+TypeName+"\".")
+						throw new ArgumentException("Syntax error: Unknown type specifier \"" + TypeName + "\".");
 				}
 			}
 		}
 
-		protected AtomarTypeSpecifier (ISyntaxNode parent,  String type)
+		public AtomarTypeSpecifier (ISyntaxNode parent,  String type)
 			: base (parent)
 		{
 			this.TypeName = type;
 		}
 
+		public override byte[] Compile()
+		{
+			switch (TypeName.ToLower())
+			{
+				case "void":
+					return new Byte[0];
+				case "char":
+					return new Byte[1];
+				case "short":
+					return new Byte[2];
+				case "int":
+					return new Byte[4];
+				case "long":
+					return new Byte[8];
+				case "float":
+					return new Byte[4];
+				case "double":
+					return new Byte[8];
+
+				default:
+					return null;
+			}
+		}
 
 	}
 }

@@ -24,7 +24,7 @@ namespace RPCC.AST
 
 			string[] words = Input.Split(new char[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
 			if (words.Length == 0)
-				throw new ArgumentNullException ("Error parsing type specifier: Input string was empty.")
+				throw new ArgumentNullException("Error parsing type specifier: Input string was empty.");
 
 			switch (words[0].ToLower())
 			{
@@ -58,5 +58,7 @@ namespace RPCC.AST
 		protected TypeSpecifier (ISyntaxNode parent)
 			: base (parent)
 		{}
+
+		public abstract override byte[] Compile();
 	}
 }

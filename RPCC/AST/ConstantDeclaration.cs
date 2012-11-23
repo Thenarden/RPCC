@@ -10,10 +10,6 @@ namespace RPCC.AST
 {
 	class ConstantDeclaration : ISyntaxNode
 	{
-		public override int CompiledSize
-		{
-			get { return 0; } // Constants do not get into compiled code but get replaced by their value....
-		}
 
 		public TypeSpecifier Type
 		{
@@ -79,7 +75,7 @@ namespace RPCC.AST
 				this.Signedness = this.DefaultSignedness;
 
 			// Load type
-			Type = TypeSpecifier.Parse(match.Groups["type"].Value);
+			Type = TypeSpecifier.Parse(this, match.Groups["type"].Value);
 			if (Type == null)
 				throw new SyntaxException("Error parsing constant: Expected type, got \"" + match.Groups["type"].Value + "\".");
 

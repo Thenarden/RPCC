@@ -52,9 +52,17 @@ namespace RPCC
 			string test = File.ReadAllText ("test.c");
 			Document doc = new Document(test);
 
-			foreach (ISyntaxNode node in doc.Nodes)
+			foreach (FunctionDeclaration node in doc.Functions.Values)
 			{
-				Console.WriteLine(node.GetType().Name);
+				Console.WriteLine("function "+node.Identifier);
+			}
+			foreach (VariableDeclaration node in doc.Variables.Values)
+			{
+				Console.WriteLine("variable " + node.Identifier);
+			}
+			foreach (ConstantDeclaration node in doc.Constants.Values)
+			{
+				Console.WriteLine("constant " + node.Identifier);
 			}
 			
 
