@@ -1,1 +1,5 @@
-RPCC
+= RPCC =
+== RedPowerControl C-Compiler ==
+
+RPC is a module of the RedPower2 Minecraft mod wich adds a (nearly) complete emulation of a 6502 CPU.
+RPCC is a C-Compiler written in C# and designed to generate binary code for the RPC CPU 65el02.
