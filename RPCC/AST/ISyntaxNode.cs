@@ -14,6 +14,18 @@ namespace RPCC.AST
 			get;
 			private set;
 		}
+		public Document DocumentNode
+		{
+			get
+			{
+				if (Parent == null)
+					throw new NullReferenceException("No Document node found in AST: Parent was null.");
+
+				if (Parent.GetType() == typeof(Document))
+					return (Document)Parent;
+				return Parent.DocumentNode;
+			}
+		}
 		
 		public virtual Signedness DefaultSignedness
 		{
