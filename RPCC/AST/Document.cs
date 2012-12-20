@@ -29,11 +29,10 @@ namespace RPCC.AST
 			Constants = new Dictionary<string, ConstantDeclaration>();
 			Functions = new Dictionary<string, FunctionDeclaration>();
 
-			while (true)
+			System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex("^\\s*$");
+
+			while (!regex.IsMatch(Input)) // Gets true once the Input string contains only spaces, \n etc...
 			{
-				Input = Input.TrimStart(new char[] { ' ', '\t', '\n', '\r' });
-				if (Input.Length == 0)
-					break;
 
 				/* Try parse any possible construct
 				 * like:
@@ -88,42 +87,26 @@ namespace RPCC.AST
 			throw new NotImplementedException();
 		}
 
-		public override bool IsConstantDeclared(string Identifier)
+		public override ConstantDeclaration GetConstantDeclaration(string Identifier)
 		{
-			return Constants.ContainsKey(Identifier);
-		}
-		public override bool IsVariableDeclared(string Identifier)
-		{
-			return Variables.ContainsKey(Identifier);
-		}
-		public override bool IsFunctionDeclared(string Identifier)
-		{
-			return Functions.ContainsKey(Identifier);
-		}
-
-
-		private delegate T Constr<T>(ref string i);
-
-		private T TryParse<T>(ref string Input, Constr<T> constr) where T: class
-		{
-			try
-			{
-				string tmp = Input;
-
-				// Try to parse as Variable Declaration
-				T node = constr(ref tmp);
-
-				Input = tmp; // Update Input string...
-				return node;
-			}
-		/*	catch (SyntaxException e)
-			{
-				return true;
-			}*/
-			catch(ParseException)
-			{
+			if (!Constants.ContainsKey(Identifier))
 				return null;
-			}
+			return Constants[Identifier];
 		}
+		public override VariableDeclaration GetVariableDeclaration(string Identifier)
+		{
+			if (!Variables.ContainsKey(Identifier))
+				return null;
+			return Variables[Identifier];
+		}
+		public override FunctionDeclaration GetFunctionDeclaration(string Identifier)
+		{
+			if (!Functions.ContainsKey(Identifier))
+				return null;
+			return Functions[Identifier];
+		}
+
+
+		
 	}
 }
