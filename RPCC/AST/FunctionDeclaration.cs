@@ -10,10 +10,6 @@ namespace RPCC.AST
 {
 	class FunctionDeclaration : ISyntaxNode
 	{
-		public override byte[] Compile()
-		{
-			throw new NotImplementedException();
-		}
 
 		public new Document Parent 
 		{
@@ -23,7 +19,7 @@ namespace RPCC.AST
 			}
 		}
 		
-		public TypeSpecifier Type
+		public ITypeSpecifier Type
 		{
 			get;
 			private set;
@@ -63,6 +59,7 @@ namespace RPCC.AST
 			: base(parent)
 		{
 			Pattern regExPattern =
+				"^\\s*" +
 				new Group("def",
 					new Group("type", Provider.type) +
 					"\\s+" +
@@ -83,12 +80,12 @@ namespace RPCC.AST
 
 			if (!match.Success)
 				throw new ParseException();
-			if (match.Index != 0)
-				throw new ParseException();
-			Input = Input.Remove(match.Index, match.Length);
+			//if (match.Index != 0)
+			//	throw new ParseException();
+			Input = Input.Remove(0, match.Index+match.Length); // Also removes all starting spaces etc...
 
 
-			Type = TypeSpecifier.Parse(this, match.Groups["type"].Value);
+			Type = ITypeSpecifier.Parse(this, match.Groups["type"].Value);
 			if (Type == null)
 				throw new SyntaxException("Error parsing variable: Expected type, got \"" + match.Groups["type"].Value + "\".");
 
@@ -115,7 +112,28 @@ namespace RPCC.AST
 			if (match.Groups["terminus"].Value == "{") // Well, there's a body...
 			{
 				//TODO: Parse body of function...
-				Body = new ISyntaxNode[1];
+				//Body = new ISyntaxNode[0];
+
+				List<ISyntaxNode> bodyNodes = new List<ISyntaxNode>();
+
+				System.Text.RegularExpressions.Regex endMatch = new System.Text.RegularExpressions.Regex("^\\s*}");
+				while (!endMatch.IsMatch(Input))
+				{
+					FunctionCall fcall = TryParse<FunctionCall>(ref Input, delegate(ref string i) { return new FunctionCall(this, ref i); });
+					if (fcall != null)
+					{
+						bodyNodes.Add(fcall);
+
+						// Search for following semikolon and remove it...
+						System.Text.RegularExpressions.Regex semikolon = new System.Text.RegularExpressions.Regex("^\\s*;");
+						System.Text.RegularExpressions.Match semikolonMatch = semikolon.Match(Input);
+						if (!semikolonMatch.Success)
+							throw new SyntaxException("Syntax error: Missing semikolon after function call.");
+						Input = Input.Remove(0, semikolonMatch.Length);
+					}
+				}
+
+				Body = bodyNodes.ToArray();
 
 				// Finally remove remaining (closing) }
 				int index = Input.IndexOf('}');
@@ -123,6 +141,12 @@ namespace RPCC.AST
 			}
 			else if (match.Groups["terminus"].Value == ";") // No Body, only header declaration
 				Body = null;
+		}
+
+
+		public override byte[] Compile()
+		{
+			throw new NotImplementedException();
 		}
 	}
 }
