@@ -5,6 +5,8 @@ using System.Text;
 
 using System.Text.RegularExpressions;
 
+using RPCC.Exceptions;
+
 namespace RPCC.AST
 {
 	abstract class ISyntaxNode
@@ -42,23 +44,36 @@ namespace RPCC.AST
 			Parent = parent;
 		}
 
-		public virtual bool IsVariableDeclared (string Identifier)
+		public virtual VariableDeclaration GetVariableDeclaration (string Identifier)
 		{
 			if (Parent == null)
-				return false;
-			return Parent.IsVariableDeclared(Identifier);
+				return null;
+			return Parent.GetVariableDeclaration(Identifier);
 		}
-		public virtual bool IsConstantDeclared(string Identifier)
+		public virtual ConstantDeclaration GetConstantDeclaration(string Identifier)
 		{
 			if (Parent == null)
-				return false;
-			return Parent.IsConstantDeclared(Identifier);
+				return null;
+			return Parent.GetConstantDeclaration(Identifier);
 		}
-		public virtual bool IsFunctionDeclared(string Identifier)
+		public virtual FunctionDeclaration GetFunctionDeclaration(string Identifier)
 		{
 			if (Parent == null)
-				return false;
-			return Parent.IsFunctionDeclared(Identifier);
+				return null;
+			return Parent.GetFunctionDeclaration(Identifier);
+		}
+
+		public bool IsVariableDeclared(string Identifier)
+		{
+			return GetVariableDeclaration(Identifier) != null;
+		}
+		public bool IsConstantDeclared(string Identifier)
+		{
+			return GetConstantDeclaration(Identifier) != null;
+		}
+		public bool IsFunctionDeclared(string Identifier)
+		{
+			return GetFunctionDeclaration(Identifier) != null;
 		}
 
 		public abstract byte[] Compile();
@@ -122,6 +137,30 @@ namespace RPCC.AST
 
 			return word;
 
+		}
+
+		protected delegate T Constr<T>(ref string i);
+
+		protected static T TryParse<T>(ref string Input, Constr<T> constr) where T : class
+		{
+			try
+			{
+				string tmp = Input;
+
+				// Try to parse as Variable Declaration
+				T node = constr(ref tmp);
+
+				Input = tmp; // Update Input string...
+				return node;
+			}
+			/*	catch (SyntaxException e)
+				{
+					return true;
+				}*/
+			catch (ParseException)
+			{
+				return null;
+			}
 		}
 	}
 }
