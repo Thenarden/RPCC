@@ -17,7 +17,7 @@ namespace RPCC.AST
 			private set;
 		}
 
-		public TypeSpecifier Type
+		public ITypeSpecifier Type
 		{
 			get;
 			private set;
@@ -52,6 +52,7 @@ namespace RPCC.AST
 		//	string regExPattern = "(?<def>(?<signdness>signed|unsigned)?\\s*(?<type>(void|char|short|int|long|float|double))(?<pointer>[\\s\\*]+)(?<identifier>[a-zA-Z_][a-zA-Z_0-9]*)\\s*(=\\s*(?<assignment>.*))?);(?<rest>.*)";
 
 			Pattern regExPattern =
+				"^\\s*" +
 				new Group("def",
 					"(" +
 						new Group("signedness", "signed|unsigned") +
@@ -71,9 +72,9 @@ namespace RPCC.AST
 
 			if (!match.Success)
 				throw new ParseException();
-			if (match.Index != 0)
-				throw new ParseException();
-			Input = Input.Remove(match.Index, match.Length);
+		//	if (match.Index != 0)
+		//		throw new ParseException();
+			Input = Input.Remove(0, match.Index + match.Length); // Also removes all starting spaces etc...
 
 			// Load signedness
 			if (match.Groups["signedness"].Success)
@@ -82,7 +83,7 @@ namespace RPCC.AST
 				this.Signedness = this.DefaultSignedness;
 
 			// Load type
-			Type = TypeSpecifier.Parse(this, match.Groups["type"].Value);
+			Type = ITypeSpecifier.Parse(this, match.Groups["type"].Value);
 			if (Type == null)
 				throw new SyntaxException("Error parsing variable: Expected type, got \"" + match.Groups["type"].Value + "\".");
 
