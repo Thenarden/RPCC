@@ -1,0 +1,38 @@
+* Operatoren
+	* Unär
+		* Präfix
+			* +
+			* -
+			* !
+			* ~
+			* typeof() ==> Ausnahme fcall!!!
+			* (<type>)
+			* &
+			* *
+		* Postfix
+		* Infix
+	* Binär
+		* Präfix
+		* Postfix
+		* Infix
+			* +
+			* *
+			* -
+			* /
+			* ==
+			* !=
+			* >=
+			* <=
+			* <
+			* >
+			* |
+			* ||
+			* &
+			* &&
+			* ^
+			* %
+			* <<
+			* >>
+* F-Call
+* Variable Read
+* Const
