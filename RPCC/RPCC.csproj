@@ -109,18 +109,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AST\Assignment.cs" />
     <Compile Include="AST\ConstantDeclaration.cs" />
+    <Compile Include="AST\FloatingConstant.cs" />
+    <Compile Include="AST\IConstantValue.cs" />
     <Compile Include="AST\Document.cs" />
+    <Compile Include="AST\FunctionCall.cs" />
     <Compile Include="AST\FunctionDeclaration.cs" />
+    <Compile Include="AST\IntegerConstant.cs" />
+    <Compile Include="AST\IRightValue.cs" />
     <Compile Include="AST\ISyntaxNode.cs" />
     <Compile Include="AST\Signedness.cs" />
     <Compile Include="AST\VariableDeclaration.cs" />
-    <Compile Include="AST\AtomarTypeSpecifier.cs" />
+    <Compile Include="AST\AtomicTypeSpecifier.cs" />
     <Compile Include="Exceptions\SyntaxException.cs" />
     <Compile Include="Exceptions\ParseException.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="AST\TypeSpecifier.cs" />
+    <Compile Include="AST\ITypeSpecifier.cs" />
     <Compile Include="RegExPattern\Expression.cs" />
     <Compile Include="RegExPattern\Group.cs" />
     <Compile Include="RegExPattern\Pattern.cs" />
@@ -128,6 +134,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="AST\Operators\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
