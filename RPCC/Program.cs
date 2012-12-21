@@ -5,6 +5,7 @@ using System.Text;
 
 using RPCC.AST;
 using RPCC.RegExPattern;
+using System.Reflection;
 
 namespace RPCC
 {
@@ -28,7 +29,7 @@ namespace RPCC
 				";";*/
 			//	Pattern regExPattern = new Group("operator", "\\+|-|/|\\*|==|!=|>=|<=|>|<|\\||\\|\\|");
 
-			Pattern regExPattern =
+		/*	Pattern regExPattern =
 				"^\\s*" +
 				new Group("def",
 					"(" +
@@ -62,13 +63,40 @@ namespace RPCC
 			}
 
 			Console.WriteLine();
+			Console.WriteLine();*/
+
+			String test2 = "0x1346537344334534343";
+
+			Type t = typeof(IntegerConstant);
+			ConstructorInfo constr = t.GetConstructor (new Type[]{typeof(ISyntaxNode), typeof (string).MakeByRefType()});
+			if (constr == null)
+				Console.WriteLine("No constructor found");
+			else
+			{
+				Console.WriteLine("Constructor found");
+				Console.WriteLine(test2);
+				IntegerConstant fconst = null;
+				try
+				{
+					fconst = (IntegerConstant)constr.Invoke(new Object[] { null, test2 });
+				}
+				catch (TargetInvocationException e)
+				{
+					throw e.InnerException;
+				}
+				if (fconst == null)
+					Console.WriteLine("Constructor invokation failed.");
+				else
+				{
+					Console.WriteLine(fconst.Type);
+					Console.WriteLine(test2);
+				}
+			}
+
 			Console.WriteLine();
 
-			Console.WriteLine(Convert.ToDouble("-0.12e2"));
-			Console.WriteLine();
-
-		//	Console.ReadKey();
-		//	return;
+			Console.ReadKey();
+			return;
 
 			//Int32 foo = 10.2e12;
 		

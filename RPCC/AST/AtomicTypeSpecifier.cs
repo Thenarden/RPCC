@@ -102,10 +102,29 @@ namespace RPCC.AST
 			}
 		}
 
+		public bool Unsigned
+		{
+			get;
+			private set;
+		}
 		public AtomicTypeSpecifier (ISyntaxNode parent,  String type, bool unsigned)
 			: base (parent)
 		{
 			this.TypeName = type.ToLower();
+			Unsigned = unsigned;
+		}
+
+		public override string ToString()
+		{
+			string ret = "";
+
+			if (this.Unsigned)
+				ret += "unsigned ";
+
+			ret += this.TypeName.ToLower();
+
+			return ret;
+
 		}
 
 		public override byte[] Compile()

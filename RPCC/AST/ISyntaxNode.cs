@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 
 using RPCC.Exceptions;
+using System.Reflection;
 
 namespace RPCC.AST
 {
@@ -139,8 +140,42 @@ namespace RPCC.AST
 
 		}
 
+
 		protected delegate T Constr<T>(ref string i);
 
+		// Caching the constructors so that I need Refelection only once...
+		private static Dictionary<Type, ConstructorInfo> Constructors = new Dictionary<Type,ConstructorInfo>();
+
+		protected static T TryParse<T> (ISyntaxNode parent, ref string Input) where T:class
+		{
+			// If the given constructor is not cached, do it...
+			if (!Constructors.ContainsKey(typeof(T)))
+			{
+				ConstructorInfo constr = typeof(T).GetConstructor(new Type[] { typeof(ISyntaxNode), typeof(string).MakeByRefType() });
+
+				if (constr == null)
+					throw new ArgumentException("Given type has no default ISyntaxNode constructor (with ISyntaxNode and ref string parameters).");
+
+				Constructors.Add(typeof(T), constr);
+			}
+
+			T instance = null;
+
+			try
+			{
+				instance = (T)Constructors[typeof(T)].Invoke(new Object[] { parent, Input });
+			}
+			catch (TargetInvocationException e)
+			{
+				if (e.InnerException.GetType() == typeof(ParseException))
+					return null;
+				throw e.InnerException;
+			}
+
+			return instance;
+		}
+
+		[Obsolete("There's a new implementation for this!")]
 		protected static T TryParse<T>(ref string Input, Constr<T> constr) where T : class
 		{
 			try
