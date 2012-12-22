@@ -146,6 +146,18 @@ namespace RPCC.AST
 		// Caching the constructors so that I need Refelection only once...
 		private static Dictionary<Type, ConstructorInfo> Constructors = new Dictionary<Type,ConstructorInfo>();
 
+		private static readonly Action<Exception> _internalPreserveStackTrace =
+			(Action<Exception>)Delegate.CreateDelegate(
+				typeof(Action<Exception>),
+				typeof(Exception).GetMethod(
+					"InternalPreserveStackTrace",
+					BindingFlags.Instance | BindingFlags.NonPublic));
+
+		public static void PreserveStackTrace(Exception e)
+		{
+			_internalPreserveStackTrace(e);
+		}
+
 		protected static T TryParse<T> (ISyntaxNode parent, ref string Input) where T:class
 		{
 			// If the given constructor is not cached, do it...
@@ -163,12 +175,15 @@ namespace RPCC.AST
 
 			try
 			{
-				instance = (T)Constructors[typeof(T)].Invoke(new Object[] { parent, Input });
+				Object[] args = new Object[] { parent, Input };
+				instance = (T)Constructors[typeof(T)].Invoke(args);
+				Input = (string)args[1];
 			}
 			catch (TargetInvocationException e)
 			{
 				if (e.InnerException.GetType() == typeof(ParseException))
 					return null;
+
 				throw e.InnerException;
 			}
 
