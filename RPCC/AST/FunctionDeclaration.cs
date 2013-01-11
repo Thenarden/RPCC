@@ -119,7 +119,7 @@ namespace RPCC.AST
 				System.Text.RegularExpressions.Regex endMatch = new System.Text.RegularExpressions.Regex("^\\s*}");
 				while (!endMatch.IsMatch(Input))
 				{
-					FunctionCall fcall = TryParse<FunctionCall>(ref Input, delegate(ref string i) { return new FunctionCall(this, ref i); });
+					FunctionCall fcall = TryParse<FunctionCall>(this, ref Input);
 					if (fcall != null)
 					{
 						bodyNodes.Add(fcall);
@@ -130,7 +130,11 @@ namespace RPCC.AST
 						if (!semikolonMatch.Success)
 							throw new SyntaxException("Syntax error: Missing semikolon after function call.");
 						Input = Input.Remove(0, semikolonMatch.Length);
+
+						continue;
 					}
+
+					throw new SyntaxException("Syntax error: Invalid token \"" + Input + "\"");
 				}
 
 				Body = bodyNodes.ToArray();
