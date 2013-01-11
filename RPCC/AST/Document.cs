@@ -69,15 +69,15 @@ namespace RPCC.AST
 						if (!Functions[f.Identifier].HasBody) // Oh, well. Function was declared, but not defined....
 							Functions[f.Identifier] = f;
 						else
-							throw new ParseException("Semantic error: The function \"" + f.Identifier + "\" was already defined.");
+							throw new SyntaxException("Semantic error: The function \"" + f.Identifier + "\" was already defined.");
 					}
 					else
-						throw new ParseException("Semantic error: The function \""+f.Identifier+"\" was already declared.");
+						throw new SyntaxException("Semantic error: The function \"" + f.Identifier + "\" was already declared.");
 					continue;
 				}
 
 				// Well, if nothing got parsed, then it's a invalid expression
-				throw new ParseException("Syntax error: Invalid token \""+Input+"\"");
+				throw new SyntaxException("Syntax error: Invalid token \""+Input+"\"");
 			}
 
 		}

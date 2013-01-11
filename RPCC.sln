@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RPCC", "RPCC\RPCC.csproj", "{1DA5D337-9C49-4F00-BC2D-3B96F2500614}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProj", "TestProj\TestProj.csproj", "{6EA25ACF-295D-49D8-9A2B-75C0B7F09E56}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,14 @@ Global
 		{1DA5D337-9C49-4F00-BC2D-3B96F2500614}.Release|x64.Build.0 = Release|x64
 		{1DA5D337-9C49-4F00-BC2D-3B96F2500614}.Release|x86.ActiveCfg = Release|x86
 		{1DA5D337-9C49-4F00-BC2D-3B96F2500614}.Release|x86.Build.0 = Release|x86
+		{6EA25ACF-295D-49D8-9A2B-75C0B7F09E56}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{6EA25ACF-295D-49D8-9A2B-75C0B7F09E56}.Debug|x64.ActiveCfg = Debug|x86
+		{6EA25ACF-295D-49D8-9A2B-75C0B7F09E56}.Debug|x86.ActiveCfg = Debug|x86
+		{6EA25ACF-295D-49D8-9A2B-75C0B7F09E56}.Debug|x86.Build.0 = Debug|x86
+		{6EA25ACF-295D-49D8-9A2B-75C0B7F09E56}.Release|Any CPU.ActiveCfg = Release|x86
+		{6EA25ACF-295D-49D8-9A2B-75C0B7F09E56}.Release|x64.ActiveCfg = Release|x86
+		{6EA25ACF-295D-49D8-9A2B-75C0B7F09E56}.Release|x86.ActiveCfg = Release|x86
+		{6EA25ACF-295D-49D8-9A2B-75C0B7F09E56}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

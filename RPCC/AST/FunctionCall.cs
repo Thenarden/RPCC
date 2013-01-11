@@ -65,10 +65,24 @@ namespace RPCC.AST
 			List<IRightValue> parameters = new List<IRightValue>();
 
 			System.Text.RegularExpressions.Regex endRegEx = new System.Text.RegularExpressions.Regex("^\\s*$");
+			System.Text.RegularExpressions.Regex commaRegEx = new System.Text.RegularExpressions.Regex("^\\s*,\\s*");
+			
 			while (!endRegEx.IsMatch(param))
 			{
 				IRightValue val = IRightValue.Parse(this, ref param);
+				if (val == null)
+					throw new SyntaxException ("syntax error: Can't parse rvalue at function call.");
+
 				parameters.Add(val);
+
+				if (endRegEx.IsMatch(param))
+					break;
+
+				System.Text.RegularExpressions.Match comma = commaRegEx.Match(param);
+				if (!comma.Success)
+					throw new SyntaxException("syntax error: Function arguments must be separated by a comma.");
+				
+				param = param.Remove(0, comma.Index + comma.Length); // Also removes all starting spaces etc...
 			}
 
 			this.Parameters = parameters.ToArray(); ;
