@@ -15,7 +15,7 @@ namespace RPCC.AST
 		public virtual ISyntaxNode Parent
 		{
 			get;
-			private set;
+			set;
 		}
 		public Document DocumentNode
 		{
@@ -142,9 +142,11 @@ namespace RPCC.AST
 
 
 		protected delegate T Constr<T>(ref string i);
+		public delegate T SyntaxNodeConstructor<T>(ISyntaxNode parent, ref string Input);
 
 		// Caching the constructors so that I need Refelection only once...
-		private static Dictionary<Type, ConstructorInfo> Constructors = new Dictionary<Type,ConstructorInfo>();
+		private static Dictionary<Type, Delegate> Constructors = new Dictionary<Type, Delegate>();
+	//	private static Dictionary<Type, ConstructorInfo> Constructors = new Dictionary<Type, ConstructorInfo>();
 
 		private static readonly Action<Exception> _internalPreserveStackTrace =
 			(Action<Exception>)Delegate.CreateDelegate(
@@ -158,36 +160,34 @@ namespace RPCC.AST
 			_internalPreserveStackTrace(e);
 		}
 
-		protected static T TryParse<T> (ISyntaxNode parent, ref string Input) where T:class
+		protected static T TryParse<T> (ISyntaxNode parent, ref string Input) where T:ISyntaxNode
 		{
 			// If the given constructor is not cached, do it...
 			if (!Constructors.ContainsKey(typeof(T)))
 			{
 				ConstructorInfo constr = typeof(T).GetConstructor(new Type[] { typeof(ISyntaxNode), typeof(string).MakeByRefType() });
-
+				
 				if (constr == null)
 					throw new ArgumentException("Given type has no default ISyntaxNode constructor (with ISyntaxNode and ref string parameters).");
 
-				Constructors.Add(typeof(T), constr);
+				Constructors.Add(typeof(T), constr.CreateDelegate(typeof(SyntaxNodeConstructor<T>)));
+				
 			}
-
-			T instance = null;
 
 			try
 			{
-				Object[] args = new Object[] { parent, Input };
-				instance = (T)Constructors[typeof(T)].Invoke(args);
-				Input = (string)args[1];
+				SyntaxNodeConstructor<T> del = (SyntaxNodeConstructor<T>)Constructors[typeof(T)];
+
+				string tmp = Input;
+				T node = del(parent, ref tmp);
+				Input = tmp; // Update Input string...
+
+				return node;
 			}
-			catch (TargetInvocationException e)
+			catch (ParseException)
 			{
-				if (e.InnerException.GetType() == typeof(ParseException))
-					return null;
-
-				throw e.InnerException;
+				return null;
 			}
-
-			return instance;
 		}
 
 		[Obsolete("There's a new implementation for this!")]
@@ -212,5 +212,7 @@ namespace RPCC.AST
 				return null;
 			}
 		}
+
+
 	}
 }

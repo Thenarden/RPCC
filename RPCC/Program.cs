@@ -6,6 +6,7 @@ using System.Text;
 using RPCC.AST;
 using RPCC.RegExPattern;
 using System.Reflection;
+using RPCC.Exceptions;
 
 namespace RPCC
 {
@@ -14,6 +15,59 @@ namespace RPCC
 		static void Main(string[] args)
 		{
 			new Program(args);
+		//	Program.SpeedTest();
+		}
+
+		public static void SpeedTest ()
+		{
+			const int Num = 1000000;
+			TimeSpan t1 = new TimeSpan();
+			TimeSpan t2 = new TimeSpan();
+			DateTime start;
+			
+
+			Console.WriteLine("Running test 1: constructor call");
+			Type t = typeof(IntegerConstant);
+			ConstructorInfo constr = t.GetConstructor (new Type[]{typeof(ISyntaxNode), typeof (string).MakeByRefType()});
+			ISyntaxNode.SyntaxNodeConstructor<IntegerConstant> del = (ISyntaxNode.SyntaxNodeConstructor<IntegerConstant>)constr.CreateDelegate(typeof(ISyntaxNode.SyntaxNodeConstructor<IntegerConstant>)); ;
+		
+			if (constr == null)
+				Console.WriteLine("No constructor found");
+			else
+			{
+
+				start = DateTime.Now;
+				for (int i = 0; i < Num; i++)
+				{
+					String test = "1421";
+					try
+					{
+						del(null, ref test);
+					}
+					catch (ParseException)
+					{
+					}
+				}
+				t2 = DateTime.Now - start;
+			}
+
+
+
+			Console.WriteLine("Running test 2: static function");
+			start = DateTime.Now;
+			for (int i = 0; i < Num; i++)
+			{
+				String test = "1421";
+				IntegerConstant.Parse(null, ref test);
+			}
+			t1 = DateTime.Now - start;
+
+			
+
+			Console.WriteLine("Test 1: " + t1);
+			Console.WriteLine("Test 2: " + t2);
+
+			Console.ReadKey();
 		}
 
 
@@ -29,26 +83,14 @@ namespace RPCC
 				";";*/
 			//	Pattern regExPattern = new Group("operator", "\\+|-|/|\\*|==|!=|>=|<=|>|<|\\||\\|\\|");
 
-		/*	Pattern regExPattern =
+
+			Pattern regExPattern =
 				"^\\s*" +
-				new Group("def",
-					"(" +
-					new Group("integers",
-						"(" +
-						new Group("signedness", "(un)?signed") +
-						"\\s)?" +
-						new Group("inttype", "(char|short|int|long)")
-					) +
-					"|" +
-					new Group("floatings", "(float|double)") +
-					"|" +
-					new Group("void", "void") +
-					")");
-		//	Console.WriteLine(regExPattern);
+				new Group("def", "(\\+|\\*)");
 
 			System.Text.RegularExpressions.Regex regEx = new System.Text.RegularExpressions.Regex(regExPattern);
 
-			System.Text.RegularExpressions.Match match = regEx.Match("  int");
+			System.Text.RegularExpressions.Match match = regEx.Match("  tetsfunc(2134, 1412);");
 			if (!match.Success)
 				Console.WriteLine ("No match found.");
 			else
@@ -63,40 +105,10 @@ namespace RPCC
 			}
 
 			Console.WriteLine();
-			Console.WriteLine();*/
-
-			String test2 = "0x1346537344334534343";
-
-			Type t = typeof(IntegerConstant);
-			ConstructorInfo constr = t.GetConstructor (new Type[]{typeof(ISyntaxNode), typeof (string).MakeByRefType()});
-			if (constr == null)
-				Console.WriteLine("No constructor found");
-			else
-			{
-				Console.WriteLine("Constructor found");
-				Console.WriteLine(test2);
-				IntegerConstant fconst = null;
-				try
-				{
-					fconst = (IntegerConstant)constr.Invoke(new Object[] { null, test2 });
-				}
-				catch (TargetInvocationException e)
-				{
-					throw e.InnerException;
-				}
-				if (fconst == null)
-					Console.WriteLine("Constructor invokation failed.");
-				else
-				{
-					Console.WriteLine(fconst.Type);
-					Console.WriteLine(test2);
-				}
-			}
-
 			Console.WriteLine();
-
-			Console.ReadKey();
-			return;
+			
+		//	Console.ReadKey();
+		//	return;
 
 			//Int32 foo = 10.2e12;
 		
@@ -112,6 +124,11 @@ namespace RPCC
 					foreach (ISyntaxNode child in node.Body)
 					{
 						Console.WriteLine(child.ToString());
+						if (child is FunctionCall)
+						{
+							foreach (IRightValue rval in (child as FunctionCall).Parameters)
+								Console.WriteLine("  " + rval.ToString());
+						}
 					}
 				}
 			}
