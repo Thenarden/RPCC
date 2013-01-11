@@ -116,12 +116,17 @@
     <Compile Include="AST\Document.cs" />
     <Compile Include="AST\FunctionCall.cs" />
     <Compile Include="AST\FunctionDeclaration.cs" />
+    <Compile Include="AST\Operators\AdditionOperator.cs" />
+    <Compile Include="AST\Operators\IBinaryOperator.cs" />
+    <Compile Include="AST\Operators\InversionOperator.cs" />
+    <Compile Include="AST\Operators\IUnaryOperator.cs" />
     <Compile Include="AST\IntegerConstant.cs" />
     <Compile Include="AST\IRightValue.cs" />
     <Compile Include="AST\ISyntaxNode.cs" />
     <Compile Include="AST\Signedness.cs" />
     <Compile Include="AST\VariableDeclaration.cs" />
     <Compile Include="AST\AtomicTypeSpecifier.cs" />
+    <Compile Include="ConstructorDelegateHelper.cs" />
     <Compile Include="Exceptions\SyntaxException.cs" />
     <Compile Include="Exceptions\ParseException.cs" />
     <Compile Include="Program.cs" />
@@ -135,9 +140,7 @@
   <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="AST\Operators\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
