@@ -151,6 +151,16 @@ namespace RPCC.AST
 			}
 		}
 
+		public override bool Equals(ITypeSpecifier other)
+		{
+			AtomicTypeSpecifier o = other as AtomicTypeSpecifier;
+
+			if (o == null)
+				return false;
+
+			return (o.TypeName.ToLower() == this.TypeName.ToLower())
+		}
+
 		public override bool CanImplicitCastFrom (ITypeSpecifier type)
 		{
 			switch (TypeName)

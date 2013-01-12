@@ -8,7 +8,7 @@ using RPCC.RegExPattern;
 
 namespace RPCC.AST
 {
-	abstract class ITypeSpecifier : ISyntaxNode
+	abstract class ITypeSpecifier : ISyntaxNode, IEquatable<ITypeSpecifier>
 	{
 		public abstract String TypeName
 		{
@@ -68,5 +68,11 @@ namespace RPCC.AST
 		{}
 
 		public abstract override byte[] Compile();
+
+		public override bool Equals(object obj)
+		{
+			return Equals(obj as ITypeSpecifier);
+		}
+		public abstract bool Equals(ITypeSpecifier other);
 	}
 }
