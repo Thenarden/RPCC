@@ -158,7 +158,7 @@ namespace RPCC.AST
 			if (o == null)
 				return false;
 
-			return (o.TypeName.ToLower() == this.TypeName.ToLower())
+			return ((o.TypeName.ToLower() == this.TypeName.ToLower()) && (o.Unsigned == this.Unsigned))
 		}
 
 		public override bool CanImplicitCastFrom (ITypeSpecifier type)
