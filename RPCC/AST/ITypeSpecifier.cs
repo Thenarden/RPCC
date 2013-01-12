@@ -8,7 +8,7 @@ using RPCC.RegExPattern;
 
 namespace RPCC.AST
 {
-	abstract class ITypeSpecifier : ISyntaxNode, IEquatable<ITypeSpecifier>
+	abstract class ITypeSpecifier : ISyntaxNode, IEquatable<ITypeSpecifier>, ICloneable
 	{
 		public abstract String TypeName
 		{
@@ -74,5 +74,15 @@ namespace RPCC.AST
 			return Equals(obj as ITypeSpecifier);
 		}
 		public abstract bool Equals(ITypeSpecifier other);
+
+		public object Clone()
+		{
+			return this.Clone(this.Parent);
+		}
+		public ITypeSpecifier Clone()
+		{
+			return this.Clone(this.Parent);
+		}
+		public abstract ITypeSpecifier Clone(ISyntaxNode parent);
 	}
 }

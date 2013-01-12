@@ -161,6 +161,11 @@ namespace RPCC.AST
 			return ((o.TypeName.ToLower() == this.TypeName.ToLower()) && (o.Unsigned == this.Unsigned))
 		}
 
+		public override ITypeSpecifier Clone(ISyntaxNode parent)
+		{
+			return new AtomicTypeSpecifier(parent, this.TypeName, this.Unsigned);
+		}
+
 		public override bool CanImplicitCastFrom (ITypeSpecifier type)
 		{
 			switch (TypeName)
