@@ -158,7 +158,7 @@ namespace RPCC.AST
 			if (o == null)
 				return false;
 
-			return ((o.TypeName.ToLower() == this.TypeName.ToLower()) && (o.Unsigned == this.Unsigned))
+			return ((o.TypeName.ToLower() == this.TypeName.ToLower()) && (o.Unsigned == this.Unsigned));
 		}
 
 		public override ITypeSpecifier Clone(ISyntaxNode parent)
