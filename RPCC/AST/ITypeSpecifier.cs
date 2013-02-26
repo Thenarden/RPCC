@@ -75,7 +75,7 @@ namespace RPCC.AST
 		}
 		public abstract bool Equals(ITypeSpecifier other);
 
-		public object ICloneable.Clone()
+		object ICloneable.Clone()
 		{
 			return this.Clone();
 		}
