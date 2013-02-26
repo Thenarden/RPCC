@@ -28,6 +28,10 @@ namespace RPCC.AST
 				return decl.Type;
 			}
 		}
+		public override int Priority
+		{
+			get { return 1; }
+		}
 
 		public IRightValue[] Parameters
 		{
@@ -86,6 +90,18 @@ namespace RPCC.AST
 			}
 
 			this.Parameters = parameters.ToArray(); ;
+		}
+
+		
+		public override string ToString(string prefix)
+		{
+			string ret = "";
+
+			ret += prefix + this.GetType().Name;
+			foreach (IRightValue par in Parameters)
+				ret += "\n" + par.ToString(prefix + "  ");
+
+			return ret;
 		}
 
 		public override byte[] Compile()

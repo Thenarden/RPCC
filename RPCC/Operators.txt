@@ -6,11 +6,16 @@
 			* !
 			* ~
 			* typeof() ==> Ausnahme fcall!!!
-			* (<type>)
+			* (<type>) // Cast
 			* &
 			* *
+			* ( <expr> )
 		* Postfix
+		    * ++
+			* --
 		* Infix
+			* .
+			* ->
 	* Binär
 		* Präfix
 		* Postfix

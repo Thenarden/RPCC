@@ -10,6 +10,10 @@ namespace RPCC.AST
 	abstract class IConstantValue : IRightValue
 	{
 
+		public override int Priority
+		{
+			get { return 1; }
+		}
 
 		public IConstantValue (ISyntaxNode parent)
 			: base (parent)

@@ -7,6 +7,10 @@ namespace RPCC.AST.Operators
 {
 	class AdditionOperator : IBinaryOperator
 	{
+		public override int Priority
+		{
+			get { return 6; }
+		}
 
 		public AdditionOperator (ISyntaxNode parent, IRightValue firstOperand, IRightValue secondOperand)
 			: base (parent, firstOperand, secondOperand)

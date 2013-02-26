@@ -7,7 +7,7 @@ using RPCC.Exceptions;
 
 namespace RPCC.AST.Operators
 {
-	abstract class IBinaryOperator : IRightValue
+	abstract class IBinaryOperator : IOperator
 	{
 
 		public override ITypeSpecifier Type
@@ -35,6 +35,23 @@ namespace RPCC.AST.Operators
 			}
 		}
 
+
+		public override IRightValue PrimaryOperand
+		{
+			get { return FirstOperand; }
+			set { FirstOperand = value; }
+		}
+		public override IRightValue SecondaryOperand
+		{
+			get { return SecondOperand; }
+			set { SecondOperand = value; }
+		}
+
+		public override OperatorPosition Position
+		{
+			get { return OperatorPosition.Infix; }
+		}
+
 		public IRightValue FirstOperand
 		{
 			get;
@@ -51,6 +68,9 @@ namespace RPCC.AST.Operators
 		{
 			this.FirstOperand = firstOperand;
 			this.SecondOperand = secondOperand;
+
+			this.FirstOperand.Parent = this;
+			this.SecondOperand.Parent = this;
 		}
 
 		public static IBinaryOperator Parse (ISyntaxNode parent, ref string Input, IRightValue firstOperand)
@@ -59,35 +79,49 @@ namespace RPCC.AST.Operators
 			
 			Pattern regExPattern =
 				"^\\s*" +
-				new Group("def", "(\\+|\\*|-|/|==|!=|>=|<=|<|>|\\||\\|\\||&|&&|^|%|<<|>>)");
+				new Group("def", "(\\+|\\*|-|/|==|!=|>=|<=|<|>|\\||\\|\\||&|&&|\\^|%|<<|>>)");
 
 			System.Text.RegularExpressions.Regex regEx = new System.Text.RegularExpressions.Regex(regExPattern);
 			System.Text.RegularExpressions.Match match = regEx.Match(Input);
 
-			if (!match.Success)
+			if (!match.Groups["def"].Success)
 			{
 				Input = temp;
 				return null;
 			}
-			//	throw new ParseException();
 
-			//if (match.Index != 0)
-			//	throw new ParseException();
 			Input = Input.Remove(0, match.Index + match.Length);
 
 			string Operator = match.Groups["def"].Value;
 
 			IRightValue secondOperand = IRightValue.Parse(parent, ref Input);
-			
+
 			switch (Operator)
 			{
 				case "+":
 					return new AdditionOperator(parent, firstOperand, secondOperand);
+				case "-":
+					return new SubtractionOperator(parent, firstOperand, secondOperand);
+				case "*":
+					return new MultiplicationOperator(parent, firstOperand, secondOperand);
+				case "/":
+					return new DivisionOperator(parent, firstOperand, secondOperand);
 
 				default:
 					Input = temp;
 					throw new NotImplementedException();
 			}
+		}
+
+		public override string ToString(string prefix)
+		{
+			String str = "";
+
+			str += prefix + this.GetType().Name+"\n";
+			str += this.FirstOperand.ToString(prefix + "  ") + "\n";
+			str += this.SecondOperand.ToString(prefix + "  ");
+
+			return str;
 		}
 
 		private bool OneOperandHasType (AtomicTypeSpecifier type)

@@ -56,6 +56,11 @@ namespace RPCC.AST
 			}
 		}
 
+		public override string ToString(string prefix)
+		{
+			return prefix + Value.ToString();
+		}
+
 		public override byte[] Compile()
 		{
 			throw new NotImplementedException();
