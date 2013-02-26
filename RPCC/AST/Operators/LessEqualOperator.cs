@@ -9,7 +9,14 @@ namespace RPCC.AST.Operators
 	{
 		public override int Priority
 		{
-			get { return 9; }
+			get { return 8; }
+		}
+		public override ITypeSpecifier Type
+		{
+			get
+			{
+				return AtomicTypeSpecifier.UChar(this);
+			}
 		}
 
 		public LessEqualOperator(ISyntaxNode parent, IRightValue firstOperand, IRightValue secondOperand)

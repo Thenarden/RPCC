@@ -11,6 +11,13 @@ namespace RPCC.AST.Operators
 		{
 			get { return 9; }
 		}
+		public override ITypeSpecifier Type
+		{
+			get
+			{
+				return AtomicTypeSpecifier.UChar(this);
+			}
+		}
 
 		public UnequalOperator(ISyntaxNode parent, IRightValue firstOperand, IRightValue secondOperand)
 			: base (parent, firstOperand, secondOperand)
