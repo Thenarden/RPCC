@@ -106,6 +106,10 @@ namespace RPCC.AST.Operators
 					return new MultiplicationOperator(parent, firstOperand, secondOperand);
 				case "/":
 					return new DivisionOperator(parent, firstOperand, secondOperand);
+				case "==":
+					return new EqualOperator(parent, firstOperand, secondOperand);
+				case "!=":
+					return new InequalOperator(parent, firstOperand, secondOperand);
 
 				default:
 					Input = temp;

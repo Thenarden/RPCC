@@ -124,14 +124,9 @@ namespace RPCC
 					foreach (ISyntaxNode child in node.Body)
 					{
 						Console.WriteLine(child.ToString());
-						if (child is FunctionCall)
-						{
-							foreach (IRightValue rval in (child as FunctionCall).Parameters)
-								Console.WriteLine("  " + rval.ToString());
-						}
 					}
 				}
-			}
+			}/*
 			foreach (VariableDeclaration node in doc.Variables.Values)
 			{
 				Console.WriteLine("variable " + node.Identifier);
@@ -139,7 +134,7 @@ namespace RPCC
 			foreach (ConstantDeclaration node in doc.Constants.Values)
 			{
 				Console.WriteLine("constant " + node.Identifier);
-			}
+			}*/
 			
 
 			Console.ReadKey();
@@ -149,6 +144,11 @@ namespace RPCC
 		{
 			Console.WriteLine("testfunc: " + abc.Substring(4));
 			abc = abc.Remove(4);
+		}
+
+		void printRec (ISyntaxNode node, string prefix)
+		{
+
 		}
 	}
 }
