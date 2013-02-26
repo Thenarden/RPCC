@@ -5,14 +5,14 @@ using System.Text;
 
 namespace RPCC.AST.Operators
 {
-	class InequalOperator : IBinaryOperator
+	class LessOperator : IBinaryOperator
 	{
 		public override int Priority
 		{
 			get { return 9; }
 		}
 
-		public InequalOperator(ISyntaxNode parent, IRightValue firstOperand, IRightValue secondOperand)
+		public LessOperator(ISyntaxNode parent, IRightValue firstOperand, IRightValue secondOperand)
 			: base (parent, firstOperand, secondOperand)
 		{}
 

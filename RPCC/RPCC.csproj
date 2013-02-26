@@ -121,8 +121,12 @@
     <Compile Include="AST\Brackets.cs" />
     <Compile Include="AST\Operators\DivisionOperator.cs" />
     <Compile Include="AST\Operators\EqualOperator.cs" />
+    <Compile Include="AST\Operators\GreaterEqualOperator.cs" />
+    <Compile Include="AST\Operators\GreaterOperator.cs" />
     <Compile Include="AST\Operators\IBinaryOperator.cs" />
-    <Compile Include="AST\Operators\InequalOperator.cs" />
+    <Compile Include="AST\Operators\LessEqualOperator.cs" />
+    <Compile Include="AST\Operators\LessOperator.cs" />
+    <Compile Include="AST\Operators\UnequalOperator.cs" />
     <Compile Include="AST\Operators\IOperator.cs" />
     <Compile Include="AST\Operators\IUnaryOperator.cs" />
     <Compile Include="AST\IntegerConstant.cs" />

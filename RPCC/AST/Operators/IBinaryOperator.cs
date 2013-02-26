@@ -109,7 +109,15 @@ namespace RPCC.AST.Operators
 				case "==":
 					return new EqualOperator(parent, firstOperand, secondOperand);
 				case "!=":
-					return new InequalOperator(parent, firstOperand, secondOperand);
+					return new UnequalOperator(parent, firstOperand, secondOperand);
+				case ">=":
+					return new GreaterEqualOperator(parent, firstOperand, secondOperand);
+				case "<=":
+					return new LessEqualOperator(parent, firstOperand, secondOperand);
+				case ">":
+					return new GreaterOperator(parent, firstOperand, secondOperand);
+				case "<":
+					return new LessOperator(parent, firstOperand, secondOperand);
 
 				default:
 					Input = temp;
